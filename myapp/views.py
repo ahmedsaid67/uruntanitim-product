@@ -929,3 +929,19 @@ class BalikGorselViewSet(viewsets.ModelViewSet):
         else:
             # Veri bulunamadığında boş bir liste dön
             return Response([], status=status.HTTP_200_OK)
+
+
+class CountViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    def list(self, request):
+        urunler_count = Urunler.objects.count()
+        urun_kategori_count = UrunKategori.objects.count()
+        references_count = References.objects.count()
+
+        data = {
+            'urun_adedi': urunler_count,
+            'urun_kategori_adedi': urun_kategori_count,
+            'referanslar_adedi': references_count,
+        }
+
+        return Response(data)
