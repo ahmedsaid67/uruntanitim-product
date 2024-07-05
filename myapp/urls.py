@@ -3,7 +3,7 @@ from .views import  MenuViewSet, MenuItemListCreateView, MenuItemByMenuView, \
     MenuItemDetailView, MenuSelectedItemViewSet,SlidersViewSet,UrunKategoriViewSet,UrunKategoriListView, CheckToken,CustomAuthToken,Logout,\
     UserInfoView,UrunVitrinListView,UrunlerViewSet,UrunVitrinViewSet,\
     ImageViewSet,SosyalMedyaViewSet,ReferencesViewSet,HizliLinklerViewSet, \
-    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet
+    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet,CountViewSet
 from rest_framework.routers import DefaultRouter
 
 from django.conf import settings
@@ -59,6 +59,10 @@ router_hakkimizda.register(r'hakkimizda', HakkimizdaViewSet)
 router_baslikgorsel = DefaultRouter()
 router_baslikgorsel.register(r'baslikgorsel', BalikGorselViewSet)
 
+# adet
+router_adet = DefaultRouter()
+router_adet.register(r'adet', CountViewSet, basename='count')
+
 urlpatterns = [
 
     # selectedmenuitems
@@ -108,6 +112,9 @@ urlpatterns = [
 
     #baslikgrosel
     path('', include(router_baslikgorsel.urls)),
+
+    #adet
+    path('', include(router_adet.urls)),
 
 
     # auth apileri
