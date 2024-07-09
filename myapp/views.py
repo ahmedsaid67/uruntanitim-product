@@ -306,7 +306,11 @@ class SlidersViewSet(viewsets.ModelViewSet):
 
 
     def _shift_orders_up(self, new_order,old_order,new_device, exclude_id=None ):
-        sliders = Sliders.objects.filter(is_removed=False).exclude(pk=exclude_id).order_by('-order')
+        if not Sliders.objects.filter(is_removed=False, device=new_device, order=new_order).exists():
+            return
+
+        sliders = Sliders.objects.filter(is_removed=False,device=new_device).exclude(pk=exclude_id).order_by('-order')
+
         for slider in sliders:
             if old_order <= slider.order <= new_order:
                 next_order = slider.order - 1
@@ -318,7 +322,9 @@ class SlidersViewSet(viewsets.ModelViewSet):
                 slider.save()
 
     def _shift_orders_down(self, new_order,old_order,new_device, exclude_id=None):
-        sliders = Sliders.objects.filter(is_removed=False).exclude(pk=exclude_id).order_by('order')
+        if not Sliders.objects.filter(is_removed=False, device=new_device, order=new_order).exists():
+            return
+        sliders = Sliders.objects.filter(is_removed=False,device=new_device).exclude(pk=exclude_id).order_by('order')
         for slider in sliders:
             if old_order >= slider.order >= new_order:
                 prev_order = slider.order + 1
@@ -332,6 +338,10 @@ class SlidersViewSet(viewsets.ModelViewSet):
     def adjust_order_for_new_slider(self, order,device):
             # Eğer bu order değerine sahip bir slider varsa, bu order ve sonrasındaki tüm slider'ların order değerlerini güncelle
         sliders = Sliders.objects.filter(order__gte=order, device=device, is_removed=False).order_by('order')
+
+        if not sliders.exists():
+            return
+
         for slider in sliders:
             next_order = slider.order + 1
             # Bir sonraki order değeri zaten mevcut mu, kontrol et
@@ -344,7 +354,6 @@ class SlidersViewSet(viewsets.ModelViewSet):
                 # Eğer bir sonraki order değeri mevcutsa, güncellemeye devam et
                 slider.order = next_order
                 slider.save()
-
 
 
 # ÜRÜN Kategori
