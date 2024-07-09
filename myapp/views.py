@@ -942,10 +942,11 @@ class BalikGorselViewSet(viewsets.ModelViewSet):
 
 class CountViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
+
     def list(self, request):
-        urunler_count = Urunler.objects.count()
-        urun_kategori_count = UrunKategori.objects.count()
-        references_count = References.objects.count()
+        urunler_count = Urunler.objects.filter(is_removed=False, durum=True).count()
+        urun_kategori_count = UrunKategori.objects.filter(is_removed=False, durum=True).count()
+        references_count = References.objects.filter(is_removed=False, durum=True).count()
 
         data = {
             'urun_adedi': urunler_count,
