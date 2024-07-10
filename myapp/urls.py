@@ -2,8 +2,8 @@ from django.urls import path, include
 from .views import  MenuViewSet, MenuItemListCreateView, MenuItemByMenuView, \
     MenuItemDetailView, MenuSelectedItemViewSet,SlidersViewSet,UrunKategoriViewSet,UrunKategoriListView, CheckToken,CustomAuthToken,Logout,\
     UserInfoView,UrunVitrinListView,UrunlerViewSet,UrunVitrinViewSet,\
-    ImageViewSet,SosyalMedyaViewSet,ReferencesViewSet,HizliLinklerViewSet, \
-    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet,CountViewSet
+    ImageViewSet,ReferencesViewSet,HizliLinklerViewSet, \
+    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet,CountViewSet,MedyaViewSet
 from rest_framework.routers import DefaultRouter
 
 from django.conf import settings
@@ -35,9 +35,11 @@ router_urunler.register(r'urunler', UrunlerViewSet)
 router_image = DefaultRouter()
 router_image.register(r'image', ImageViewSet)
 
-#sosyalmedya
-router_sosyalmedya = DefaultRouter()
-router_sosyalmedya.register(r'sosyalmedya', SosyalMedyaViewSet)
+
+
+#Medya
+router_medya = DefaultRouter()
+router_medya.register(r'medya', MedyaViewSet)
 
 #referanslar
 router_references = DefaultRouter()
@@ -59,9 +61,11 @@ router_hakkimizda.register(r'hakkimizda', HakkimizdaViewSet)
 router_baslikgorsel = DefaultRouter()
 router_baslikgorsel.register(r'baslikgorsel', BalikGorselViewSet)
 
+
 # adet
 router_adet = DefaultRouter()
 router_adet.register(r'adet', CountViewSet, basename='count')
+
 
 urlpatterns = [
 
@@ -94,10 +98,12 @@ urlpatterns = [
     # image
     path('', include(router_image.urls)),
 
-    #sosyalmedya
-    path('', include(router_sosyalmedya.urls)),
 
-    #sosyalmedya
+
+    #medya
+    path('', include(router_medya.urls)),
+
+    #referanslar
     path('', include(router_references.urls)),
 
     #hızlılinkler
@@ -113,9 +119,9 @@ urlpatterns = [
     #baslikgrosel
     path('', include(router_baslikgorsel.urls)),
 
+
     #adet
     path('', include(router_adet.urls)),
-
 
     # auth apileri
     path('token/', CustomAuthToken.as_view(), name='api-token'),
