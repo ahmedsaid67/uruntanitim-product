@@ -125,16 +125,16 @@ class ImageSerializer(serializers.ModelSerializer):
         return Image.objects.create(urun=urun, **validated_data)
 
 
+# MEDYA
 
-# SOSYAL NEDYA
 
-
-from .models import SosyalMedya
-class SosyalMedyaSerializer(serializers.ModelSerializer):
+from .models import SMedya
+class MedyaSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = SosyalMedya
+        model = SMedya
         fields = '__all__'
+
 
 
 
