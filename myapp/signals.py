@@ -1,6 +1,6 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from .models import Contact,Hakkimizda,BaslikGorsel
+from .models import Contact,Hakkimizda,BaslikGorsel,SMedya
 
 @receiver(post_migrate)
 def create_initial_contact(sender, **kwargs):
@@ -29,3 +29,11 @@ def create_initial_baslikgorsel(sender, **kwargs):
 
             for data in initial_data:
                 BaslikGorsel.objects.create(name=data['name'], slug=data['slug'])
+
+
+
+@receiver(post_migrate)
+def create_initial_medya(sender, **kwargs):
+    if sender.name == 'myapp':
+        if not SMedya.objects.exists():
+            SMedya.objects.create()
