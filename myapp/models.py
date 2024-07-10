@@ -184,18 +184,14 @@ class Image(models.Model):
 
 
 
-def kapakfoto_path_sosyalmedya(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = f"{uuid.uuid4()}.{ext}"
-    return f'sosyalmedya/kapakfoto/{filename}'
+class SMedya(models.Model):
+    twitter = models.URLField(max_length=100, blank=True, null=True)
+    instagram = models.URLField(max_length=100, blank=True, null=True)
+    facebook = models.URLField(max_length=100, blank=True, null=True)
+    youtube = models.URLField(max_length=100, blank=True, null=True)
+    tiktok = models.URLField(max_length=100, blank=True, null=True)
+    linkedin = models.URLField(max_length=100, blank=True, null=True)
 
-
-class SosyalMedya(models.Model):
-    name = models.CharField(max_length=200)
-    img = models.ImageField(upload_to=kapakfoto_path_sosyalmedya, blank=True, null=True)
-    url = models.URLField(max_length=500 , blank=True, null=True)
-    durum = models.BooleanField(default=True)
-    is_removed = models.BooleanField(default=False)
 
 
 
