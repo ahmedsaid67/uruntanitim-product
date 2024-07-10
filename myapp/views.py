@@ -748,41 +748,24 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 
 
-# SOSYAL MEDYA
-
-from .models import SosyalMedya
-from .serializers import SosyalMedyaSerializer
+#medya
 
 
-class SosyalMedyaViewSet(viewsets.ModelViewSet):
-    queryset = SosyalMedya.objects.filter(is_removed=False).order_by('-id')
-    serializer_class = SosyalMedyaSerializer
+from .models import SMedya
+from .serializers import MedyaSerializer
+
+class MedyaViewSet(viewsets.ModelViewSet):
+    queryset = SMedya.objects.all().order_by('id')
+    serializer_class = MedyaSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'get_active']:
+        if self.action in ['list', 'retrieve']:
             # 'list', 'retrieve' ve 'get_active' için herhangi bir permission gerekmez
             permission_classes = []
         else:
             # Diğer tüm action'lar için IsAuthenticated kullan
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
-
-    @action(detail=False, methods=['post'])
-    def bulk_soft_delete(self, request):
-        ids = request.data.get('ids', [])
-        # Güvenli bir şekilde int listesi oluştur
-        ids = [int(id) for id in ids if id.isdigit()]
-        # Belirtilen ID'lere sahip nesneleri soft delete işlemi ile güncelle
-        SosyalMedya.objects.filter(id__in=ids).update(is_removed=True)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=False, methods=['get'])
-    def get_active(self, request):
-        active = SosyalMedya.objects.filter(durum=True, is_removed=False).order_by('-id')
-
-        # Varsayılan paginasyonu devre dışı bırak
-        serializer = self.get_serializer(active, many=True)
-        return Response(serializer.data)
 
 
 
@@ -875,6 +858,14 @@ from .serializers import ContactSerializer
 class ContactViewSet(viewsets.ModelViewSet):
     queryset = Contact.objects.all().order_by('id')
     serializer_class = ContactSerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # 'list', 'retrieve' ve 'get_active' için herhangi bir permission gerekmez
+            permission_classes = []
+        else:
+            # Diğer tüm action'lar için IsAuthenticated kullan
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
 
 from .models import Hakkimizda
@@ -885,6 +876,14 @@ from .serializers import HakkimizdaSerializer
 class HakkimizdaViewSet(viewsets.ModelViewSet):
     queryset = Hakkimizda.objects.all().order_by('id')
     serializer_class = HakkimizdaSerializer
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # 'list', 'retrieve' ve 'get_active' için herhangi bir permission gerekmez
+            permission_classes = []
+        else:
+            # Diğer tüm action'lar için IsAuthenticated kullan
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
 
 # BAŞLIK GÖRSEL
