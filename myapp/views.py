@@ -636,6 +636,71 @@ class UrunVitrinListView(ListModelMixin, GenericAPIView):
         return Response(serializer.data)
 
 
+### bedenler ###
+
+
+from .models import Beden
+from .serializers import BedenSerializer
+
+
+class BedenViewSet(viewsets.ModelViewSet):
+    queryset = Beden.objects.all().order_by('id')
+    serializer_class = BedenSerializer
+
+    @action(detail=False, methods=['get'], url_path='urun/(?P<urun_id>\d+)')
+    def bedenler_by_urun(self, request, urun_id=None):
+        queryset = Beden.objects.filter(urun__id=urun_id).order_by('id')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'], url_path='urun/(?P<urun_id>\d+)/update-durum')
+    def bedenler_durum_update(self, request, urun_id=None):
+        bedens_list = request.data.get('list', [])
+
+
+        updated_bedens = []
+
+        for beden_data in bedens_list:
+            beden_id = beden_data.get('id')
+            yeni_durum = beden_data.get('durum')
+
+            try:
+                beden = Beden.objects.get(id=beden_id, urun_id=urun_id)
+                if beden.durum != yeni_durum:
+                    beden.durum = yeni_durum
+                    beden.save()
+                    updated_bedens.append(beden_id)
+            except Beden.DoesNotExist:
+                return Response({'error': f'Beden with id {beden_id} not found for Urun {urun_id}.'},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        return Response({'success': 'Beden durumları güncellendi.', 'updated_bedens': updated_bedens},
+                        status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='urun/(?P<urun_id>\d+)/create')
+    def beden_create_toplu(self, request, urun_id=None):
+        try:
+            bedens_list = request.data.get('list', [])
+            urun = Urunler.objects.get(id=urun_id)
+
+            for beden_data in bedens_list:
+                # Create Beden object for each item in bedens_list
+                Beden.objects.create(
+                    urun=urun,
+                    numara=beden_data.get('numara'),
+                    durum=beden_data.get('durum', False)  # Default value if durum is not provided
+                )
+
+            return Response({'message': 'Beden objects created successfully'}, status=status.HTTP_201_CREATED)
+
+        except Urunler.DoesNotExist:
+            return Response({'error': 'Urunler object does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 #### urunler ###
 
 
