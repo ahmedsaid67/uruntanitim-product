@@ -3,7 +3,7 @@ from .views import  MenuViewSet, MenuItemListCreateView, MenuItemByMenuView, \
     MenuItemDetailView, MenuSelectedItemViewSet,SlidersViewSet,UrunKategoriViewSet,UrunKategoriListView, CheckToken,CustomAuthToken,Logout,\
     UserInfoView,UrunVitrinListView,UrunlerViewSet,UrunVitrinViewSet,\
     ImageViewSet,ReferencesViewSet,HizliLinklerViewSet, \
-    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet,CountViewSet,MedyaViewSet
+    ContactViewSet, HakkimizdaViewSet, BalikGorselViewSet,CountViewSet,MedyaViewSet,BedenViewSet
 from rest_framework.routers import DefaultRouter
 
 from django.conf import settings
@@ -26,6 +26,10 @@ router_urunkategori.register(r'urunkategori', UrunKategoriViewSet)
 # ürün vitrin
 router_vitrin = DefaultRouter()
 router_vitrin.register(r'urunvitrin', UrunVitrinViewSet)
+
+#bedenler
+router_bedenler = DefaultRouter()
+router_bedenler.register(r'bedenler', BedenViewSet, basename='beden')
 
 # ürünler
 router_urunler = DefaultRouter()
@@ -91,6 +95,9 @@ urlpatterns = [
     ##vitrim
     path('', include(router_vitrin.urls)),
     path('urunvitrin-list/', UrunVitrinListView.as_view(), name='urunvitrin-list'),
+
+    ##bedenler
+    path('', include(router_bedenler.urls)),
 
     # ürünler
     path('', include(router_urunler.urls)),
