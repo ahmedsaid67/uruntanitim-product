@@ -167,6 +167,18 @@ class Urunler(models.Model):
             super(Urunler, self).save(*args, **kwargs)
 
 
+# beden tablosu
+
+
+class Beden(models.Model):
+    numara = models.IntegerField()
+    urun = models.ForeignKey(Urunler, related_name='bedenler', on_delete=models.CASCADE, null=True, blank=True)
+    durum = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.numara)
+
+
 
 def album_path_fotogaleri(instance, filename):
     ext = filename.split('.')[-1]
