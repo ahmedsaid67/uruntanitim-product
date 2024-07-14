@@ -109,6 +109,21 @@ class UrunlerSerializer(serializers.ModelSerializer):
 
 ### DECİMALFİLD ile çalışıyorsan boş değer gondereceksen bu "" olmalıdır. null none kabul etmıyor. yada formda hıc koyma oyle işlem yap.
 
+
+
+#bedenler
+
+from .models import Beden
+
+class BedenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Beden
+        fields = '__all__'
+
+
+
+
+
 # IMAGE
 
 from .models import Image
