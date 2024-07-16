@@ -416,14 +416,17 @@ class UrunKategoriViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         # Güncelleme işleminden önce eski 'durum' değerini kaydet
         old_durum = instance.durum
+        old_baslik = instance.baslik
         self.perform_update(serializer)
-
-        # Güncelleme sonrası durum değerini al
+        new_baslik = serializer.validated_data.get('baslik', old_baslik)
         new_durum = serializer.validated_data.get('durum', old_durum)
 
         # Eğer 'durum' değişmişse ve yeni durum False ise ilgili Urunler nesnelerini güncelle
         if old_durum != new_durum and not new_durum:
             Urunler.objects.filter(urun_kategori=instance).update(urun_kategori=None)
+
+        if old_baslik != new_baslik:
+            self.update_related_menu_item_title(instance)
 
         # Durum değişikliği varsa ilgili MenuItem'i güncelle
         if old_durum != new_durum:
@@ -431,6 +434,24 @@ class UrunKategoriViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+
+    def update_related_menu_item_title(self, instance):
+        try:
+            menu_item = MenuItem.objects.get(slug=instance.slug)
+            menu_item.title = instance.baslik
+            menu_item.save()
+        except MenuItem.DoesNotExist:
+            pass
+
+        try:
+            baslik_gorsel = BaslikGorsel.objects.get(slug=instance.slug)
+            baslik_gorsel.name = instance.baslik
+            baslik_gorsel.save()
+        except BaslikGorsel.DoesNotExist:
+            pass
+    
+    
+    
     def update_related_menu_item(self, instance, new_durum):
         # Ürün kategorisinin başlığı ile eşleşen ve 'Ürünlerimiz' başlıklı parent menüye bağlı MenuItem nesnesini bul
         menu_item = MenuItem.objects.get(slug=instance.slug)
